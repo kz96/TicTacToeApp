@@ -1,5 +1,7 @@
 package com.kornelzielinski;
 
+import java.awt.*;
+
 public class Cell {
 
     // Content of the cell
@@ -20,17 +22,24 @@ public class Cell {
     }
 
     // paint cell with content
-    public void paint () {
-        switch (content){
-            case EMPTY:
-                System.out.print("   ");
-                break;
-            case NOUGHT:
-                System.out.print(" O ");
-                break;
-            case CROSS:
-                System.out.print(" X ");
-                break;
-        }
+    public void paint (Graphics gDC) {
+        Graphics2D graphics2D;
+        graphics2D = (Graphics2D) gDC;
+        graphics2D.setStroke(new BasicStroke(Main.SYMBOL_STROKE_WIDTH,
+                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
+
+            int x1 = col * Main.CELL_SIZE + Main.CELL_PADDING;
+            int y1 = row * Main.CELL_SIZE + Main.CELL_PADDING;
+            if (content == Content.CROSS) {
+                graphics2D.setColor(Color.RED);
+                int x2 = (col + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
+                int y2 = (row + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
+                graphics2D.drawLine(x1,y1,x2,y2);
+                graphics2D.drawLine(x2,y1,x1,y2);
+            }
+            else if (content == Content.NOUGHT) {
+                graphics2D.setColor(Color.BLUE);
+                graphics2D.drawOval(x1, y1, Main.SYMBOL_SIZE, Main.SYMBOL_SIZE);
+            }
     }
 }
