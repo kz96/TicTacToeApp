@@ -5,7 +5,7 @@ import java.awt.*;
 public class Board {
 //    public static final int ROWS = 5, COLUMNS = 5;
 
-    Cell[][] cells;
+    public Cell[][] cells;
 //    int currentRow, currentCollumn;
 
     // initializing the game board

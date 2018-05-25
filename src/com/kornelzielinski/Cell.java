@@ -5,7 +5,7 @@ import java.awt.*;
 public class Cell {
 
     // Content of the cell
-    Content content;
+    public Content content;
 
     // row and column of the cell
     int row, col;
