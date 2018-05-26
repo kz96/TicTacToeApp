@@ -26,6 +26,7 @@ public class Main extends JPanel {
     private  GameStatus gameStatus;
     private Content currentPlayer;
     private JLabel statusLabel;
+    private AIPlayer aiPlayer;
 
     public static Scanner in = new Scanner(System.in);
 
@@ -42,13 +43,16 @@ public class Main extends JPanel {
                 int colSel = mX / CELL_SIZE;
 
                 if (gameStatus == GameStatus.PLAYING) {
+                    currentPlayer = Content.CROSS;
                     if (rowSel >= 0 && rowSel < ROWS
                             && colSel >= 0 && colSel < COLUMNS
                             && board.cells[rowSel][colSel].content == Content.EMPTY) {
                         board.cells[rowSel][colSel].content = currentPlayer;
                         updateGame(currentPlayer, rowSel, colSel);
+//                        updateGame(currentPlayer,rowSel,colSel);
                         // swaping players
                         currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
+                        AIMove();
                     }
                     } else {
                         initGame();
@@ -80,6 +84,8 @@ public class Main extends JPanel {
                 board.cells[rows][cols].content = Content.EMPTY;
             }
         }
+        aiPlayer = new AIPlayerStrategy(board);
+        aiPlayer.setContent(Content.NOUGHT);
         currentPlayer = Content.CROSS;
         gameStatus = GameStatus.PLAYING;
     }
@@ -133,7 +139,7 @@ public class Main extends JPanel {
         }
         else if (gameStatus == GameStatus.DRAW){
             statusLabel.setForeground(Color.RED);
-            statusLabel.setText("DRAW !");
+            statusLabel.setText("DRAW ! Click to restart");
         }
         else if (gameStatus == GameStatus.C_WON) {
             statusLabel.setForeground(Color.RED);
@@ -143,6 +149,13 @@ public class Main extends JPanel {
             statusLabel.setForeground(Color.RED);
             statusLabel.setText("O WON ! Click to restart");
         }
+    }
+
+    public void AIMove() {
+        int[] generatedMove = aiPlayer.move();
+        board.cells[generatedMove[0]][generatedMove[1]].content = currentPlayer;
+        updateGame(currentPlayer, generatedMove[0], generatedMove[1]);
+        repaint();
     }
 
     public static void main(String[] args) {
