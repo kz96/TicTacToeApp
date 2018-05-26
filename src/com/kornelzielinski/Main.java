@@ -84,7 +84,7 @@ public class Main extends JPanel {
                 board.cells[rows][cols].content = Content.EMPTY;
             }
         }
-        aiPlayer = new AIPlayerStrategy(board);
+        aiPlayer = new AIPlayerMM(board);
         aiPlayer.setContent(Content.NOUGHT);
         currentPlayer = Content.CROSS;
         gameStatus = GameStatus.PLAYING;
