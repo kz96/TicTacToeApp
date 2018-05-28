@@ -49,10 +49,15 @@ public class Main extends JPanel {
                             && board.cells[rowSel][colSel].content == Content.EMPTY) {
                         board.cells[rowSel][colSel].content = currentPlayer;
                         updateGame(currentPlayer, rowSel, colSel);
-//                        updateGame(currentPlayer,rowSel,colSel);
-                        // swaping players
-                        currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
-                        AIMove();
+                        if (gameStatus == GameStatus.C_WON) {
+                            board.hasWon(Content.CROSS, rowSel, colSel);
+                        }
+                        else if (gameStatus == GameStatus.DRAW){
+                            board.isDraw();
+                        } else {
+                            currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
+                            AIMove();
+                        }
                     }
                     } else {
                         initGame();
@@ -84,33 +89,12 @@ public class Main extends JPanel {
                 board.cells[rows][cols].content = Content.EMPTY;
             }
         }
-        aiPlayer = new AIPlayerMM(board);
+        aiPlayer = new AIPlayerMMwithABP(board);
         aiPlayer.setContent(Content.NOUGHT);
         currentPlayer = Content.CROSS;
         gameStatus = GameStatus.PLAYING;
     }
 
-    // Player makes a move, while updating current rows and columns
-//    public void playerMove(Content con) {
-//        boolean validInput = false;
-//        do {
-//            if (con == Content.CROSS) {
-//                System.out.println("Player X, enter your move");
-//            } else {
-//                System.out.println("Player O, enter your move");
-//            }
-//            int row = in.nextInt() - 1;
-//            int col = in.nextInt() - 1;
-//            if (row >= 0 && row < Board.ROWS && col >= 0 && col < Board.COLUMNS && board.cells[row][col].content == Content.EMPTY) {
-//                board.cells[row][col].content = con;
-//                board.currentRow = row;
-//                board.currentCollumn = col;
-//                validInput = true;
-//            } else {
-//                System.out.println("This move is invalid !");
-//            }
-//        } while (!validInput);
-//    }
 
     // Updating the state after the player made a move
     public void updateGame(Content con, int rows, int cols) {

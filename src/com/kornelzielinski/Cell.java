@@ -31,14 +31,14 @@ public class Cell {
             int x1 = col * Main.CELL_SIZE + Main.CELL_PADDING;
             int y1 = row * Main.CELL_SIZE + Main.CELL_PADDING;
             if (content == Content.CROSS) {
-                graphics2D.setColor(Color.RED);
+                graphics2D.setColor(Color.BLACK);
                 int x2 = (col + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
                 int y2 = (row + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
                 graphics2D.drawLine(x1,y1,x2,y2);
                 graphics2D.drawLine(x2,y1,x1,y2);
             }
             else if (content == Content.NOUGHT) {
-                graphics2D.setColor(Color.BLUE);
+                graphics2D.setColor(Color.BLACK);
                 graphics2D.drawOval(x1, y1, Main.SYMBOL_SIZE, Main.SYMBOL_SIZE);
             }
     }

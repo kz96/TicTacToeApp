@@ -21,7 +21,7 @@ public class AIPlayerMM extends AIPlayer {
         List<int[]> nextMoves = generateMoves();
 
         int bestScore = (player == myContent) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
-        int currentScore;
+        int score;
         int bestRow = -1;
         int bestColumn = -1;
 
@@ -33,17 +33,17 @@ public class AIPlayerMM extends AIPlayer {
             for (int[] move : nextMoves) {
                 cells[move[0]][move[1]].content = player;
                 if (player == myContent) { // computers is maximizing player
-                    currentScore = minimax(depth-1, aiContent)[0];
-                    if (currentScore > bestScore) {
-                        bestScore = currentScore;
+                    score = minimax(depth-1, aiContent)[0];
+                    if (score > bestScore) {
+                        bestScore = score;
                         bestRow = move[0];
                         bestColumn = move[1];
                     }
                 }
                 else { // user is minimizing player
-                    currentScore = minimax(depth-1, myContent)[0];
-                    if (currentScore < bestScore) {
-                        bestScore = currentScore;
+                    score = minimax(depth-1, myContent)[0];
+                    if (score < bestScore) {
+                        bestScore = score;
                         bestRow = move[0];
                         bestColumn = move[1];
                     }
