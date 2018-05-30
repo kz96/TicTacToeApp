@@ -111,17 +111,7 @@ public class Main extends JPanel {
         super.paintComponent(gDC);
         setBackground(Color.WHITE);
         board.paint(gDC);
-
-        if (gameStatus == GameStatus.PLAYING) {
-            statusLabel.setForeground(Color.BLACK);
-            if (currentPlayer == Content.CROSS) {
-                statusLabel.setText("X make a move !");
-            }
-            else {
-                statusLabel.setText("O make a move !");
-            }
-        }
-        else if (gameStatus == GameStatus.DRAW){
+        if (gameStatus == GameStatus.DRAW){
             statusLabel.setForeground(Color.RED);
             statusLabel.setText("DRAW ! Click to restart");
         }

@@ -33,8 +33,8 @@ public class AIPlayerMM extends AIPlayer {
             for (int[] move : nextMoves) {
                 cells[move[0]][move[1]].content = player;
                 if (player == myContent) { // computers is maximizing player
-                    score = minimax(depth-1, aiContent)[0];
-                    if (score > bestScore) {
+                    score = minimax(depth-1, oppContent)[0];
+                    if (score >= bestScore) {
                         bestScore = score;
                         bestRow = move[0];
                         bestColumn = move[1];
@@ -42,7 +42,7 @@ public class AIPlayerMM extends AIPlayer {
                 }
                 else { // user is minimizing player
                     score = minimax(depth-1, myContent)[0];
-                    if (score < bestScore) {
+                    if (score <= bestScore) {
                         bestScore = score;
                         bestRow = move[0];
                         bestColumn = move[1];
@@ -59,7 +59,7 @@ public class AIPlayerMM extends AIPlayer {
         List<int[]> nextMoves = new ArrayList<int[]>();
 
         // game over
-        if(hasWon(myContent) || hasWon(aiContent)) {
+        if(hasWon(myContent) || hasWon(oppContent)) {
             return nextMoves; // empty list
         }
 
@@ -95,7 +95,7 @@ public class AIPlayerMM extends AIPlayer {
         if (cells[row1][col1].content == myContent) {
             score = 1;
         }
-        else if (cells[row1][col1].content == aiContent) {
+        else if (cells[row1][col1].content == oppContent) {
             score = -1;
         }
 
@@ -111,9 +111,9 @@ public class AIPlayerMM extends AIPlayer {
                 score = 1;
             }
         }
-        else if (cells[row2][col2].content == aiContent) {
+        else if (cells[row2][col2].content == oppContent) {
             if (score == -1) { //cell 1 is opponents
-                score = 10;
+                score = -10;
             }
             else if (score == 1) { // cell 1 is mine
                 return 0;
@@ -135,7 +135,7 @@ public class AIPlayerMM extends AIPlayer {
                 score = 1;
             }
         }
-        else if (cells[row3][col3].content == aiContent) {
+        else if (cells[row3][col3].content == oppContent) {
             if (score < 0) { //cell1 and/or cell2 is oppnents
                 score *= 10;
             }
