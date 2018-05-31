@@ -1,16 +1,23 @@
 package com.kornelzielinski;
 
 //import javax.imageio.ImageIO;
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.ImageObserver;
+import java.awt.image.ImageProducer;
+import java.io.File;
 //import java.awt.image.BufferedImage;
 //import java.io.IOException;
 
-public class Cell extends JPanel {
+public class Cell extends JButton {
 
     // Content of the cell
     Content content;
-//    private BufferedImage image;
+    ImageIcon X = new ImageIcon(this.getClass().getResource("X.png"));
+    ImageIcon O = new ImageIcon(this.getClass().getResource("O.png"));
+
 
     // row and column of the cell
     int row, col;
@@ -19,13 +26,30 @@ public class Cell extends JPanel {
         this.row = row;
         this.col = col;
         clear();
-//        try {
-//            image = ImageIO.read(getClass().getResourceAsStream("X.png"));
-//        }
-//        catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        repaint();
+    }
+
+    public Content getContent() {
+        return content;
+    }
+
+    public void setContent(Content content) {
+        this.content = content;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getCol() {
+        return col;
+    }
+
+    public void setCol(int col) {
+        this.col = col;
     }
 
     // clearing the content of the cell to EMPTY
@@ -34,25 +58,22 @@ public class Cell extends JPanel {
     }
 
     // paint cell with content
-    public void paint (Graphics gDC) {
-        Graphics2D graphics2D;
-        graphics2D = (Graphics2D) gDC;
-        graphics2D.setStroke(new BasicStroke(Main.SYMBOL_STROKE_WIDTH,
-                    BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-
-            int x1 = col * Main.CELL_SIZE + Main.CELL_PADDING;
-            int y1 = row * Main.CELL_SIZE + Main.CELL_PADDING;
-            if (content == Content.CROSS) {
-                graphics2D.setColor(Color.BLACK);
-                int x2 = (col + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
-                int y2 = (row + 1) * Main.CELL_SIZE - Main.CELL_PADDING;
-                graphics2D.drawLine(x1,y1,x2,y2);
-                graphics2D.drawLine(x2,y1,x1,y2);
-//                gDC.drawImage(image, x2-x1, y2-y1, x2-x1, y2-y1, null);
-            }
-            else if (content == Content.NOUGHT) {
-                graphics2D.setColor(Color.BLACK);
-                graphics2D.drawOval(x1, y1, Main.SYMBOL_SIZE, Main.SYMBOL_SIZE);
-            }
+    @Override
+    public void paintComponent (Graphics gDC) {
+        super.paintComponent(gDC);
+        int offset = 5;
+        Graphics2D graphics2D = (Graphics2D) gDC;
+        graphics2D.setStroke(new BasicStroke(5));;
+        switch (content) {
+            case NOUGHT:
+                setIcon(O);
+                break;
+            case CROSS:
+                setIcon(X);
+                break;
+            case EMPTY:
+                setIcon(null);
+                break;
+        }
     }
 }

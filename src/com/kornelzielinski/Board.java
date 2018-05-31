@@ -1,21 +1,38 @@
 package com.kornelzielinski;
 
+import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-public class Board {
-//    public static final int ROWS = 5, COLUMNS = 5;
+public class Board extends JPanel {
 
     Cell[][] cells;
-//    int currentRow, currentCollumn;
+
+    public void setCell(Content content, int row, int column) throws  IllegalArgumentException{
+        if (cells[row][column].getContent() ==  Content.EMPTY) {
+            cells[row][column].setContent(content);
+        }
+        else throw new IllegalArgumentException("Taken");
+    }
+
+    public Cell getCell (int row, int column) {
+        return cells[row][column];
+    }
+
 
     // initializing the game board
-    public Board() {
+    public Board(ActionListener actionListener) {
         cells = new Cell[Main.ROWS][Main.COLUMNS];
+        this.setLayout(new GridLayout(Main.ROWS, Main.COLUMNS));
         for (int row = 0; row < Main.ROWS; row++) {
             for (int col = 0; col < Main.COLUMNS; col++) {
                 cells[row][col] = new Cell(row,col);
+                this.add(cells[row][col]);
+                cells[row][col].addActionListener(actionListener);
             }
         }
+        init();
     }
 
     // (re)initializing content of the game board
@@ -55,26 +72,7 @@ public class Board {
                 && cells[0][2].content == con
                 && cells[1][1].content == con
                 && cells[2][0].content == con);
+
     }
 
-    // painting the board
-    public void paint(Graphics gDC) {
-        gDC.setColor(Color.GRAY);
-        for (int row = 0; row < Main.ROWS; row++) {
-            gDC.fillRoundRect(0, Main.CELL_SIZE * row - Main.GRID_WIDTH_HALF,
-                    Main.CANVAS_WIDTH-1, Main.GRID_WIDTH,
-                    Main.GRID_WIDTH, Main.GRID_WIDTH);
-        }
-        for (int col = 0; col < Main.COLUMNS; col++) {
-            gDC.fillRoundRect(Main.CELL_SIZE * col - Main.GRID_WIDTH_HALF, 0,
-                    Main.GRID_WIDTH, Main.CANVAS_HEIGHT - 1,
-                    Main.GRID_WIDTH, Main.GRID_WIDTH);
-        }
-
-        for (int row = 0; row < Main.ROWS; row++) {
-            for (int col = 0; col < Main.COLUMNS; col++) {
-                cells[row][col].paint(gDC);
-            }
-        }
-    }
 }

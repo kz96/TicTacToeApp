@@ -2,85 +2,76 @@ package com.kornelzielinski;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.Scanner;
 
-public class Main extends JPanel {
+public class Main extends JFrame {
     // constants for the game
     public static final int COLUMNS = 3, ROWS = 3;
-    public static final String HEAD = "Tic Tac Toe";
-
-    //dimension for graphics drawing
-    public static final int CELL_SIZE=100;
-    public static final int CANVAS_WIDTH = CELL_SIZE * COLUMNS;
-    public static final int CANVAS_HEIGHT = CELL_SIZE * ROWS;
-    public static final int GRID_WIDTH = 8;
-    public static final int GRID_WIDTH_HALF = GRID_WIDTH / 2;
-    public static final int CELL_PADDING = CELL_SIZE / 6;
-    public static final int SYMBOL_SIZE = CELL_SIZE - CELL_PADDING * 2;
-    public static final int SYMBOL_STROKE_WIDTH = 8;
 
     // initializing important fields
     private Board board;
     private  GameStatus gameStatus;
     private Content currentPlayer;
-    private JLabel statusLabel;
     private AIPlayer aiPlayer;
-
-    public static Scanner in = new Scanner(System.in);
+    private JMenuItem miClose, miNew;
+    private ActionListener al = new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (e.getSource() == miClose){
+                dispose();
+            }
+            else if (e.getSource() == miNew) {
+                initGame();
+                repaint();
+            }
+        }
+    };
 
     // constructor setting up the game
     public Main() {
-
-        this.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                int mX = e.getX();
-                int mY = e.getY();
-
-                int rowSel = mY / CELL_SIZE;
-                int colSel = mX / CELL_SIZE;
-
-                if (gameStatus == GameStatus.PLAYING) {
-                    currentPlayer = Content.CROSS;
-                    if (rowSel >= 0 && rowSel < ROWS
-                            && colSel >= 0 && colSel < COLUMNS
-                            && board.cells[rowSel][colSel].content == Content.EMPTY) {
-                        board.cells[rowSel][colSel].content = currentPlayer;
-                        updateGame(currentPlayer, rowSel, colSel);
-                        if (gameStatus == GameStatus.C_WON) {
-                            board.hasWon(Content.CROSS, rowSel, colSel);
-                        }
-                        else if (gameStatus == GameStatus.DRAW){
-                            board.isDraw();
-                        } else {
-                            currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
-                            AIMove();
-                        }
-                    }
-                    } else {
-                        initGame();
-                    }
+        board = new Board((ActionEvent e) -> {
+            currentPlayer = Content.CROSS;
+            Cell c = (Cell) e.getSource();
+                c.content = currentPlayer;
+                updateGame(currentPlayer, c.getRow(), c.getCol());
+                if (gameStatus == GameStatus.C_WON) {
                     repaint();
-            }
+                    board.hasWon(currentPlayer, c.getRow(), c.getCol());
+                }
+                else if (gameStatus == GameStatus.DRAW) {
+                    repaint();
+                    board.isDraw();
+                }
+                else {
+                    currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
+                    AIMove();
+                    updateGame(currentPlayer, c.getRow(), c.getCol());
+                    repaint();
+                }
+                repaint();
+                if (gameStatus != GameStatus.PLAYING) {
+                    initGame();
+                }
         });
-
-        statusLabel = new JLabel("        ");
-        statusLabel.setFont(new Font(Font.DIALOG_INPUT, Font.BOLD, 14));
-        statusLabel.setBorder(BorderFactory.createEmptyBorder(2,5,4,5));
-        statusLabel.setOpaque(true);
-        statusLabel.setBackground(Color.LIGHT_GRAY);
-
-        setLayout(new BorderLayout());
-        add(statusLabel, BorderLayout.PAGE_END);
-        setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT+30));
-
-        board = new Board();
+        this.add(board);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+        this.setTitle("TIC-TAC-TOE");
+        this.setSize(400, 400);
+        this.setVisible(true);
+        JMenuBar jMenuBar = new JMenuBar();
+        JMenu menu = new JMenu("File");
+        miNew = new JMenuItem("New Game");
+        menu.add(miNew);
+        menu.addSeparator();
+        miClose = new JMenuItem("Close");
+        menu.add(miClose);
+        jMenuBar.add(menu);
+        setJMenuBar(jMenuBar);
+        miClose.addActionListener(al);
         initGame();
+
     }
-
-
 
     // Initalize game board and current status
     public void initGame() {
@@ -91,8 +82,8 @@ public class Main extends JPanel {
         }
         aiPlayer = new AIPlayerMMwithABP(board);
         aiPlayer.setContent(Content.NOUGHT);
-        currentPlayer = Content.CROSS;
         gameStatus = GameStatus.PLAYING;
+        currentPlayer = Content.CROSS;
     }
 
 
@@ -100,28 +91,31 @@ public class Main extends JPanel {
     public void updateGame(Content con, int rows, int cols) {
         if (board.hasWon(con, rows, cols)) { // check if win
             gameStatus = (con == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
+            getGameStatus();
         }
         else if (board.isDraw()) { // check if draw
             gameStatus = GameStatus.DRAW;
+            getGameStatus();
         }
         // otherwise no change in state
     }
 
-    public void paintComponent(Graphics gDC) {
-        super.paintComponent(gDC);
-        setBackground(Color.WHITE);
-        board.paint(gDC);
-        if (gameStatus == GameStatus.DRAW){
-            statusLabel.setForeground(Color.RED);
-            statusLabel.setText("DRAW ! Click to restart");
+
+    public void getGameStatus() {
+        if (gameStatus == GameStatus.PLAYING) {
+            gameStatus = (currentPlayer == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
         }
         else if (gameStatus == GameStatus.C_WON) {
-            statusLabel.setForeground(Color.RED);
-            statusLabel.setText("X WON ! Click to restart");
+            JOptionPane.showMessageDialog(null, "X WON !");
+            initGame();
         }
         else if (gameStatus == GameStatus.N_WON) {
-            statusLabel.setForeground(Color.RED);
-            statusLabel.setText("O WON ! Click to restart");
+            JOptionPane.showMessageDialog(null, "O WON !");
+            initGame();
+        }
+        else if (gameStatus == GameStatus.DRAW) {
+            JOptionPane.showMessageDialog(null, "DRAW !");
+            initGame();
         }
     }
 
@@ -136,12 +130,7 @@ public class Main extends JPanel {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                JFrame frame = new JFrame(HEAD);
-                frame.setContentPane(new Main());
-                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-                frame.pack();
-                frame.setLocationRelativeTo(null);
-                frame.setVisible(true);
+                new Main();
             }
         });
     }
