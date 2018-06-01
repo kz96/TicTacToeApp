@@ -74,9 +74,9 @@ public class Main extends JFrame {
 
 
     // Updating the state after the player made a move
-    public void updateGame(Content con, int rows, int cols) {
-        if (board.hasWon(con, rows, cols)) { // check if win
-            gameStatus = (con == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
+    public void updateGame(Content content, int rows, int cols) {
+        if (board.hasWon(content, rows, cols)) { // check if win
+            gameStatus = (content == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
             getGameStatus();
         }
         else if (board.isDraw()) { // check if draw
@@ -91,8 +91,8 @@ public class Main extends JFrame {
         if (gameStatus == GameStatus.PLAYING) {
             gameStatus = (currentPlayer == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
         }
-        else if (gameStatus == GameStatus.C_WON) {
-            int dialogButton = JOptionPane.showConfirmDialog(null, "CROSS WON ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+         if (gameStatus == GameStatus.C_WON) {
+            int dialogButton = JOptionPane.showConfirmDialog(null, "CROSS WON ! REMATCH ?", "Select one option", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (dialogButton == 0) {
                 initGame();
             }
@@ -102,7 +102,7 @@ public class Main extends JFrame {
 
         }
         else if (gameStatus == GameStatus.N_WON) {
-            int dialogButton = JOptionPane.showConfirmDialog(null, "NOUGHT WON ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int dialogButton = JOptionPane.showConfirmDialog(null, "NOUGHT WON ! REMATCH ?", "Select one option", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (dialogButton == 0) {
                 initGame();
             }
@@ -111,7 +111,7 @@ public class Main extends JFrame {
             }
         }
         else if (gameStatus == GameStatus.DRAW) {
-            int dialogButton = JOptionPane.showConfirmDialog(null, "DRAW ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            int dialogButton = JOptionPane.showConfirmDialog(null, "DRAW ! REMATCH ?", "Select one option", JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             if (dialogButton == 0) {
                 initGame();
             }
