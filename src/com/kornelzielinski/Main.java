@@ -11,7 +11,7 @@ public class Main extends JFrame {
 
     // initializing important fields
     private Board board;
-    private  GameStatus gameStatus;
+    private GameStatus gameStatus;
     private Content currentPlayer;
     private AIPlayer aiPlayer;
     private JMenuItem miClose, miNew;
@@ -22,8 +22,7 @@ public class Main extends JFrame {
                 dispose();
             }
             else if (e.getSource() == miNew) {
-                initGame();
-                repaint();
+                new Main();
             }
         }
     };
@@ -33,26 +32,14 @@ public class Main extends JFrame {
         board = new Board((ActionEvent e) -> {
             currentPlayer = Content.CROSS;
             Cell c = (Cell) e.getSource();
+            if (c.content == Content.EMPTY) {
                 c.content = currentPlayer;
                 updateGame(currentPlayer, c.getRow(), c.getCol());
-                if (gameStatus == GameStatus.C_WON) {
-                    repaint();
-                    board.hasWon(currentPlayer, c.getRow(), c.getCol());
-                }
-                else if (gameStatus == GameStatus.DRAW) {
-                    repaint();
-                    board.isDraw();
-                }
-                else {
-                    currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
-                    AIMove();
-                    updateGame(currentPlayer, c.getRow(), c.getCol());
-                    repaint();
-                }
+                currentPlayer = (currentPlayer == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
+                AIMove();
                 repaint();
-                if (gameStatus != GameStatus.PLAYING) {
-                    initGame();
-                }
+                updateGame(currentPlayer, c.getRow(), c.getCol());
+            }
         });
         this.add(board);
         this.setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -70,7 +57,6 @@ public class Main extends JFrame {
         setJMenuBar(jMenuBar);
         miClose.addActionListener(al);
         initGame();
-
     }
 
     // Initalize game board and current status
@@ -80,7 +66,7 @@ public class Main extends JFrame {
                 board.cells[rows][cols].content = Content.EMPTY;
             }
         }
-        aiPlayer = new AIPlayerMMwithABP(board);
+        aiPlayer = new AIPlayerMM(board);
         aiPlayer.setContent(Content.NOUGHT);
         gameStatus = GameStatus.PLAYING;
         currentPlayer = Content.CROSS;
@@ -106,24 +92,41 @@ public class Main extends JFrame {
             gameStatus = (currentPlayer == Content.CROSS) ? GameStatus.C_WON : GameStatus.N_WON;
         }
         else if (gameStatus == GameStatus.C_WON) {
-            JOptionPane.showMessageDialog(null, "X WON !");
-            initGame();
+            int dialogButton = JOptionPane.showConfirmDialog(null, "CROSS WON ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (dialogButton == 0) {
+                initGame();
+            }
+            else {
+                dispose();
+            }
+
         }
         else if (gameStatus == GameStatus.N_WON) {
-            JOptionPane.showMessageDialog(null, "O WON !");
-            initGame();
+            int dialogButton = JOptionPane.showConfirmDialog(null, "NOUGHT WON ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (dialogButton == 0) {
+                initGame();
+            }
+            else {
+                dispose();
+            }
         }
         else if (gameStatus == GameStatus.DRAW) {
-            JOptionPane.showMessageDialog(null, "DRAW !");
-            initGame();
+            int dialogButton = JOptionPane.showConfirmDialog(null, "DRAW ! REMATCH ?", "Select one option", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if (dialogButton == 0) {
+                initGame();
+            }
+            else {
+                dispose();
+            }
         }
     }
 
     public void AIMove() {
         int[] generatedMove = aiPlayer.move();
-        board.cells[generatedMove[0]][generatedMove[1]].content = currentPlayer;
-        updateGame(currentPlayer, generatedMove[0], generatedMove[1]);
-        repaint();
+        if (gameStatus == GameStatus.PLAYING) {
+            board.cells[generatedMove[0]][generatedMove[1]].content = currentPlayer;
+            updateGame(currentPlayer, generatedMove[0], generatedMove[1]);
+        }
     }
 
     public static void main(String[] args) {
