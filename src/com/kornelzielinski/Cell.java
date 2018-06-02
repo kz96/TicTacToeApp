@@ -40,28 +40,20 @@ public class Cell extends JButton {
         return row;
     }
 
-    public void setRow(int row) {
-        this.row = row;
-    }
-
     public int getCol() {
         return col;
-    }
-
-    public void setCol(int col) {
-        this.col = col;
     }
 
     // clearing the content of the cell to EMPTY
     public void clear() {
         content = Content.EMPTY;
+        repaint();
     }
 
     // paint cell with content
     @Override
     public void paintComponent (Graphics gDC) {
         super.paintComponent(gDC);
-        int offset = 5;
         Graphics2D graphics2D = (Graphics2D) gDC;
         graphics2D.setStroke(new BasicStroke(5));;
         switch (content) {

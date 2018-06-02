@@ -23,6 +23,7 @@ public class Main extends JFrame {
             }
             else if (e.getSource() == miNew) {
                 new Main();
+                dispose();
             }
         }
     };
@@ -56,6 +57,7 @@ public class Main extends JFrame {
         jMenuBar.add(menu);
         setJMenuBar(jMenuBar);
         miClose.addActionListener(al);
+        miNew.addActionListener(al);
         initGame();
     }
 

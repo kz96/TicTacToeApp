@@ -39,7 +39,8 @@ public class Board extends JPanel {
     public void init() {
         for (int row = 0; row < Main.ROWS; row++) {
             for (int col = 0; col < Main.COLUMNS; col++) {
-                cells[row][col].clear();
+                cells[row][col].content = Content.EMPTY;
+                repaint();
             }
         }
     }
