@@ -10,7 +10,7 @@ public class AIPlayerMM extends AIPlayer {
 
     @Override
     int[] move() {
-        int[] result = minimax(2, myContent);
+        int[] result = minimax(2, aiCon);
         return new int[] {result[1], result[2]};
     }
 
@@ -18,40 +18,40 @@ public class AIPlayerMM extends AIPlayer {
     private int[] minimax (int depth, Content player) {
 
         // list of possible moves
-        List<int[]> nextMoves = generateMoves();
+        List<int[]> possibleMoves = generateMoves();
 
-        int bestScore = (player == myContent) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
+        int bestScore = (player == aiCon) ? Integer.MIN_VALUE : Integer.MAX_VALUE;
         int score;
-        int bestRow = -1;
-        int bestColumn = -1;
+        int bestR = -1;
+        int bestC = -1;
 
-        if (nextMoves.isEmpty() || depth == 0) {
+        if (possibleMoves.isEmpty() || depth == 0) {
             // Game Over
             bestScore = evaluate();
         }
         else {
-            for (int[] move : nextMoves) {
+            for (int[] move : possibleMoves) {
                 cells[move[0]][move[1]].content = player;
-                if (player == myContent) { // computers is maximizing player
-                    score = minimax(depth-1, oppContent)[0];
+                if (player == aiCon) { // computers is maximizing player
+                    score = minimax(depth-1, userCon)[0];
                     if (score >= bestScore) {
                         bestScore = score;
-                        bestRow = move[0];
-                        bestColumn = move[1];
+                        bestR = move[0];
+                        bestC = move[1];
                     }
                 }
                 else { // user is minimizing player
-                    score = minimax(depth-1, myContent)[0];
+                    score = minimax(depth-1, aiCon)[0];
                     if (score <= bestScore) {
                         bestScore = score;
-                        bestRow = move[0];
-                        bestColumn = move[1];
+                        bestR = move[0];
+                        bestC = move[1];
                     }
                 }
                 cells[move[0]][move[1]].content = Content.EMPTY;
             }
         }
-        return new int[]{bestScore, bestRow, bestColumn};
+        return new int[]{bestScore, bestR, bestC};
     }
 
     // trying to find all valid moves
@@ -59,7 +59,7 @@ public class AIPlayerMM extends AIPlayer {
         List<int[]> nextMoves = new ArrayList<int[]>();
 
         // game over
-        if(hasWon(myContent) || hasWon(oppContent)) {
+        if(hasWon(aiCon) || hasWon(userCon)) {
             return nextMoves; // empty list
         }
 
@@ -92,15 +92,15 @@ public class AIPlayerMM extends AIPlayer {
         int score = 0;
 
         // First cell
-        if (cells[row1][col1].content == myContent) {
+        if (cells[row1][col1].content == aiCon) {
             score = 1;
         }
-        else if (cells[row1][col1].content == oppContent) {
+        else if (cells[row1][col1].content == userCon) {
             score = -1;
         }
 
         // Second cell
-        if (cells[row2][col2].content == myContent) {
+        if (cells[row2][col2].content == aiCon) {
             if (score == 1) { //cell 1 is mine
                 score = 10;
             }
@@ -111,7 +111,7 @@ public class AIPlayerMM extends AIPlayer {
                 score = 1;
             }
         }
-        else if (cells[row2][col2].content == oppContent) {
+        else if (cells[row2][col2].content == userCon) {
             if (score == -1) { //cell 1 is opponents
                 score = -10;
             }
@@ -124,7 +124,7 @@ public class AIPlayerMM extends AIPlayer {
         }
 
         // Third cell
-        if (cells[row3][col3].content == myContent) {
+        if (cells[row3][col3].content == aiCon) {
             if (score > 0) { //cell1 and/or cell2 is mine
                 score *= 10;
             }
@@ -135,7 +135,7 @@ public class AIPlayerMM extends AIPlayer {
                 score = 1;
             }
         }
-        else if (cells[row3][col3].content == oppContent) {
+        else if (cells[row3][col3].content == userCon) {
             if (score < 0) { //cell1 and/or cell2 is oppnents
                 score *= 10;
             }
@@ -149,11 +149,13 @@ public class AIPlayerMM extends AIPlayer {
         return score;
     }
 
-    private int[] winningPatterns = {
+    private int[] winPattern = {
             0b111000000, 0b000111000, 0b000000111,
             0b100100100, 0b010010010, 0b001001001,
             0b100010001, 0b001010100  };
 
+
+    // function checking who won
     private boolean hasWon (Content player) {
         int pattern = 0b000000000 ; // nine bit pattern for nine cells
         for (int rows=0; rows < ROWS; rows++) {
@@ -163,7 +165,7 @@ public class AIPlayerMM extends AIPlayer {
                 }
             }
         }
-        for (int winningPattern : winningPatterns) {
+        for (int winningPattern : winPattern) {
             if ((pattern & winningPattern) == winningPattern) {
                 return true;
             }

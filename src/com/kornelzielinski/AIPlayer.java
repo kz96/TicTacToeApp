@@ -5,16 +5,16 @@ public abstract class AIPlayer {
     protected int COLUMNS = Main.COLUMNS;
 
     protected Cell[][] cells;
-    protected Content oppContent;
-    protected Content myContent;
+    protected Content userCon; // users content
+    protected Content aiCon; // ais content
 
     public AIPlayer(Board board) {
         cells = board.cells;
     }
 
     public void setContent(Content content) {
-        this.myContent = content;
-        oppContent = (myContent == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
+        this.aiCon = content;
+        userCon = (aiCon == Content.CROSS) ? Content.NOUGHT : Content.CROSS;
     }
 
     abstract int[] move();

@@ -9,18 +9,6 @@ public class Board extends JPanel {
 
     Cell[][] cells;
 
-    public void setCell(Content content, int row, int column) throws  IllegalArgumentException{
-        if (cells[row][column].getContent() ==  Content.EMPTY) {
-            cells[row][column].setContent(content);
-        }
-        else throw new IllegalArgumentException("Taken");
-    }
-
-    public Cell getCell (int row, int column) {
-        return cells[row][column];
-    }
-
-
     // initializing the game board
     public Board(ActionListener actionListener) {
         cells = new Cell[Main.ROWS][Main.COLUMNS];

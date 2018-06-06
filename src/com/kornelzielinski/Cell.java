@@ -15,6 +15,8 @@ public class Cell extends JButton {
 
     // Content of the cell
     Content content;
+
+    // Icons of content
     ImageIcon X = new ImageIcon(this.getClass().getResource("X.png"));
     ImageIcon O = new ImageIcon(this.getClass().getResource("O.png"));
 
@@ -22,6 +24,7 @@ public class Cell extends JButton {
     // row and column of the cell
     int row, col;
 
+    // constructor
     public Cell(int row, int col) {
         this.row = row;
         this.col = col;

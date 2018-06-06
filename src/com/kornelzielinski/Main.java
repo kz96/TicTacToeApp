@@ -68,7 +68,7 @@ public class Main extends JFrame {
                 board.cells[rows][cols].content = Content.EMPTY;
             }
         }
-        aiPlayer = new AIPlayerMM(board);
+        aiPlayer = new AIPlayerMMwithABP(board);
         aiPlayer.setContent(Content.NOUGHT);
         gameStatus = GameStatus.PLAYING;
         currentPlayer = Content.CROSS;
